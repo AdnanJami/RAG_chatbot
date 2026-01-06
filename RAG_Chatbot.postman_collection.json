@@ -1,0 +1,191 @@
+{
+	"info": {
+		"_postman_id": "feb4a338-0f18-4842-96da-bf070292befd",
+		"name": "RAG_Chatbot",
+		"description": "StartFragmentThis project is a **Retrieval-Augmented Generation (RAG) chatbot** built using **Django REST Framework**.  \nUsers can register, log in, ask questions, and retrieve their chat history. The chatbot retrieves relevant information from PDF documents using **semantic search**, embeds them in **Pinecone**, and generates responses using the **Groq API (OpenAI-120B)**.EndFragment",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "49365421",
+		"_collection_link": "https://risingkingdomur-727106.postman.co/workspace/476caec2-46e5-4ddf-8f8f-61e8c03eff4c/collection/49365421-feb4a338-0f18-4842-96da-bf070292befd?action=share&source=collection_link&creator=49365421"
+	},
+	"item": [
+		{
+			"name": "signup",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"Provide username\" ,\r\n    \"email\":\"Provide valid email\",\r\n    \"password\":\"type password\",\r\n    \"re_password\":  \"retype password\"\r\n    \r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/signup/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"signup",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "login",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"type username\",\r\n    \"password\": \"type password\"\r\n    \r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/login/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"login",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Chat",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "Provide token",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"message\": \"ask something\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/chat/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"chat",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Chat-history",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "Provide token",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8000/chat-history/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"chat-history",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "activation",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    //email will look like this http://localhost:3000/activate/MQ/abc123def456\r\n    //in this case MQ is uid and later part is token\r\n    \"uid\": \"MQ\",\r\n    \"token\":\"abc123def456\"\r\n    \r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/auth/users/activation/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"auth",
+						"users",
+						"activation",
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

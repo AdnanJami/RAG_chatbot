@@ -8,7 +8,8 @@ from groq import Groq
 from pinecone import Pinecone
 from .models import ChatMessage
 from .serializers import ChatMessageSerializer, ChatRequestSerializer
-
+from datetime import  timedelta
+from apscheduler.schedulers.background import BackgroundScheduler
 # Initialize clients
 GROQ_API_KEY = os.getenv("GROQ_API_KEY", "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")
 PINECONE_API_KEY = os.getenv("PINECONE_API_KEY", "pcsk_5Cfeu8_3BPfxgHxH7Ev8ZJhBwesLpSdHTKecDZ7eRZadva49co6wa8xakt2eEjLpJvs95B")
@@ -30,7 +31,7 @@ TEMPERATURE = 0.6
 def retrieve_relevant_chunks(query: str, top_k: int = 5) -> str:
     """Return concatenated text of top-k relevant chunks from Pinecone."""
     
-    index = get_pinecone_index()   # initialize here
+    index = get_pinecone_index() 
 
     results = index.search(
         namespace="ns1",
@@ -49,7 +50,6 @@ def retrieve_relevant_chunks(query: str, top_k: int = 5) -> str:
 
 
 def truncate_history(messages: list, max_total_tokens: int = 7500) -> list:
-    """Keep most recent messages until estimated token count is below max."""
     approx_tokens = sum(len(m["content"]) // 4 for m in messages)
     while approx_tokens > max_total_tokens and len(messages) > 2:
         messages.pop(1)
@@ -59,7 +59,6 @@ def truncate_history(messages: list, max_total_tokens: int = 7500) -> list:
 
 
 class ChatHistoryView(APIView):
-    """GET /chat-history – Retrieve chat history for the logged-in user."""
     permission_classes = [IsAuthenticated]
     
     def get(self, request):
@@ -69,7 +68,6 @@ class ChatHistoryView(APIView):
 
 
 class ChatView(APIView):
-    """POST /chat – Send a message to the chatbot and receive a response."""
     permission_classes = [IsAuthenticated]
     
     def post(self, request):
@@ -79,7 +77,6 @@ class ChatView(APIView):
         
         user_message = serializer.validated_data['message']
         
-        # Save user message
         ChatMessage.objects.create(
             user=request.user,
             role='user',
@@ -87,25 +84,19 @@ class ChatView(APIView):
         )
         
         try:
-            # 1️⃣ Retrieve context from Pinecone
             context = retrieve_relevant_chunks(user_message, top_k=5)
             
-            # 2️⃣ Build conversation history
             history = [{"role": "system", "content": SYSTEM_PROMPT}]
             
-            # Get recent chat history from database
             recent_messages = ChatMessage.objects.filter(user=request.user).order_by('-timestamp')[:20]
             for msg in reversed(recent_messages):
                 history.append({"role": msg.role, "content": msg.content})
             
-            # 3️⃣ Construct prompt with context
             prompt = f"Use the following context to answer the question. If unsure, answer based on the context.\n\nContext:\n{context}\nQuestion: {user_message}"
             history.append({"role": "user", "content": prompt})
             
-            # 4️⃣ Truncate history
             history = truncate_history(history, max_total_tokens=7500)
             
-            # 5️⃣ Call Groq
             groq_client = get_groq_client()
             response = groq_client.chat.completions.create(
                 model=MODEL,
@@ -116,7 +107,6 @@ class ChatView(APIView):
             
             assistant_message = response.choices[0].message.content
             
-            # Save assistant response
             ChatMessage.objects.create(
                 user=request.user,
                 role='assistant',
@@ -132,8 +122,7 @@ class ChatView(APIView):
                 "error": str(e)
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-from datetime import datetime, timedelta
-from apscheduler.schedulers.background import BackgroundScheduler
+
 
 
 def start():

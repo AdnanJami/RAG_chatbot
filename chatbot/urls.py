@@ -24,7 +24,6 @@ urlpatterns = [
     re_path(r'^auth/', include('djoser.urls')),
     re_path(r'^auth/', include('djoser.urls.jwt')),
     
-    # Clean aliases - only these specific endpoints
     path('signup/', UserViewSet.as_view({'post': 'create'}), name='signup'),
     path('login/', TokenObtainPairView.as_view(), name='login'),
     path('', include((chat_urlpatterns, 'chat'), namespace='chat')),

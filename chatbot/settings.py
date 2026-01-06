@@ -153,15 +153,15 @@ SIMPLE_JWT = {
 
 # Djoser Configuration
 DJOSER = {
-    'SEND_ACTIVATION_EMAIL': True,  # Enable activation email
+    'SEND_ACTIVATION_EMAIL': True, 
     'SEND_CONFIRMATION_EMAIL': False,
     'PASSWORD_RESET_CONFIRM_URL': 'password/reset/confirm/{uid}/{token}',
     'USERNAME_RESET_CONFIRM_URL': 'username/reset/confirm/{uid}/{token}',
-    'ACTIVATION_URL': 'activate/{uid}/{token}',  # Frontend URL
+    'ACTIVATION_URL': 'activate/{uid}/{token}', 
     'USER_CREATE_PASSWORD_RETYPE': True,
     'SET_PASSWORD_RETYPE': True,
     'PASSWORD_RESET_CONFIRM_RETYPE': True,
-    'TOKEN_MODEL': None,  # Use JWT instead of token
+    'TOKEN_MODEL': None, 
     'SERIALIZERS': {
         'user_create': 'djoser.serializers.UserCreateSerializer',
         'user': 'djoser.serializers.UserSerializer',
@@ -174,16 +174,14 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'muntasiradnanj@gmail.com'  # Use environment variable
-EMAIL_HOST_PASSWORD = 'rzha nibq gvzl pzei'  # Use environment variable
+EMAIL_HOST_USER = 'muntasiradnanj@gmail.com' 
+EMAIL_HOST_PASSWORD = 'rzha nibq gvzl pzei'  
 DEFAULT_FROM_EMAIL = 'muntasiradnanj@gmail.com'
 
-# For testing, use console backend:
-# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # Site Configuration
-SITE_URL = 'http://localhost:3000'  # Your frontend URL
-DOMAIN = 'localhost:8000'  # Your backend domain
+SITE_URL = 'http://localhost:3000'  
+DOMAIN = 'localhost:8000'  
 SITE_NAME = 'Your App Name'
 
 # APScheduler Configuration
